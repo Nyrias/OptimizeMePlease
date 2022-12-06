@@ -4,10 +4,10 @@ using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace OptimizeMePlease
 {
-
     /// <summary>
     /// Steps: 
     /// 
@@ -19,24 +19,30 @@ namespace OptimizeMePlease
     /// 5. Start coding within GetAuthors_Optimized method
     /// GOOD LUCK! :D 
     /// </summary>
-    public class Program
+    public static class Program
     {
-        static void Main(string[] args)
+        private static Task Main(string[] args)
         {
-            //Debugging 
-            //BenchmarkService benchmarkService = new BenchmarkService();
-            //var p = benchmarkService.GetAuthors_Optimized_Struct();
-            //var d = benchmarkService.GetAuthors_Optimized_Struct1();
+#if DEBUG
+            var benchmarkService = new BenchmarkService();
+            var a = await benchmarkService.GetAuthors();
+            var o = await benchmarkService.GetAuthors_Optimized();
+            var s = await benchmarkService.GetAuthors_Optimized_Struct();
+#endif
 
             //Comment me after first execution, please.
-            //IWillPopulateData();
+            // IWillPopulateData();
 
+#if RELEASE
             BenchmarkRunner.Run<BenchmarkService>();
+#endif
+            return Task.CompletedTask;
         }
 
         public static void IWillPopulateData()
         {
-            string sqlConnectionString = @"Server=localhost;Database=OptimizeMePlease;Trusted_Connection=True;Integrated Security=true;MultipleActiveResultSets=true";
+            string sqlConnectionString =
+                @"Server=localhost;Database=OptimizeMePlease;Trusted_Connection=True;Integrated Security=true;MultipleActiveResultSets=true;TrustServerCertificate=True;Encrypt=False";
 
             string workingDirectory = Environment.CurrentDirectory;
             string path = Path.Combine(Directory.GetParent(workingDirectory).Parent.Parent.FullName, @"script.sql");

@@ -2,7 +2,7 @@
 
 namespace OptimizeMePlease
 {
-    public class BookDto
+    public struct BookDto_Struct
     {
         public int Id { get; set; }
         public string Name { get; set; }
